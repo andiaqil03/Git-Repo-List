@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Card, CardContent, Typography, Avatar, Box } from "@mui/material";
 import { fetchRepos } from "./api/github";
 import { getDateTenDaysAgo } from "./utils/getDate";
 import "./App.css";
@@ -37,14 +38,19 @@ function App() {
         loader={<h4>Loading more...</h4>}
       >
         {repos.map(repo => (
-          <div className="repo-card" key={repo.id}>
-            <img src={repo.owner.avatar_url} alt="Avatar" className="avatar"/>
-            <div className="info">
-              <h3>{repo.full_name}</h3>
-              <p>{repo.description || "No description"}</p>
-              <span>⭐ {repo.stargazers_count}</span>
-            </div>
-          </div>
+          <Card key={repo.id} sx={{ display: "flex", p: 2, mb: 2 }}>
+            <Avatar
+              src={repo.owner.avatar_url}
+              sx={{ width: 60, height: 60, mr: 2 }}
+            />
+            <CardContent>
+              <Typography variant="h6">{repo.full_name}</Typography>
+              <Typography variant="body2" color="text.secondary">
+                {repo.description || "No description available"}
+              </Typography>
+              <Typography sx={{ mt: 1 }}>⭐ {repo.stargazers_count}</Typography>
+            </CardContent>
+          </Card>
         ))}
       </InfiniteScroll>
     </div>
