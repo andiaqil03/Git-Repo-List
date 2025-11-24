@@ -3,9 +3,9 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { Box } from "@mui/material";
 import { fetchRepos } from "./api/github";
 import { getDateTenDaysAgo } from "./utils/getDate";
-import RepoCard from "./components/RepoCard";
-import AppHeader from "./components/AppHeader";
-import LoadingSkeleton from "./components/LoadingSkeleton";
+import RepoCard from "./components/RepoCard.jsx";
+import AppHeader from "./components/AppHeader.jsx";
+import LoadingSkeleton from "./components/LoadingSkeleton.jsx";
 import "./App.css";
 
 function App() {
