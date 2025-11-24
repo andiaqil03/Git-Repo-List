@@ -21,19 +21,28 @@ function App() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const createdDate = getDateTenDaysAgo();
 
   const loadRepos = async () => {
-    const newRepos = await fetchRepos(createdDate, page);
+    try {
+      const newRepos = await fetchRepos(createdDate, page);
 
-    if (newRepos.length === 0) {
+      if (newRepos.length === 0) {
+        setHasMore(false);
+        return;
+      }
+
+      setRepos(prev => [...prev, ...newRepos]);
+      setPage(prev => prev + 1);
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load data. Please try again.");
       setHasMore(false);
-      return;
+    } finally {
+      setIsLoading(false);
     }
-
-    setRepos([...repos, ...newRepos]);
-    setPage(page + 1);
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -43,6 +52,10 @@ function App() {
   return (
     <div className="container">
       <h1>Most Starred GitHub Repos (Last 10 Days)</h1>
+
+      {error && (
+        <p style={{ color: "red", textAlign: "center" }}>{error}</p>
+      )}
 
       <InfiniteScroll
         dataLength={repos.length}
@@ -59,6 +72,9 @@ function App() {
             />
             <CardContent>
               <Typography variant="h6">{repo.full_name}</Typography>
+              <Typography variant="subtitle2" color="text.secondary">
+                @{repo.owner.login}
+              </Typography>
               <Typography variant="body2" color="text.secondary">
                 {repo.description || "No description available"}
               </Typography>
