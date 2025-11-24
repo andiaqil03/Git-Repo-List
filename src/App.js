@@ -1,14 +1,26 @@
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Card, CardContent, Typography, Avatar, Box } from "@mui/material";
+import { Card, CardContent, Typography, Avatar, Box, Skeleton } from "@mui/material";
 import { fetchRepos } from "./api/github";
 import { getDateTenDaysAgo } from "./utils/getDate";
 import "./App.css";
+
+const LoadingSkeleton = () => (
+  <Card sx={{ display: "flex", p: 2, mb: 2 }}>
+    <Skeleton variant="circular" width={60} height={60} />
+    <CardContent sx={{ width: "100%" }}>
+      <Skeleton height={25} width="60%" />
+      <Skeleton height={20} width="80%" />
+      <Skeleton height={20} width="40%" sx={{ mt: 1 }} />
+    </CardContent>
+  </Card>
+);
 
 function App() {
   const [repos, setRepos] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const createdDate = getDateTenDaysAgo();
 
   const loadRepos = async () => {
@@ -21,6 +33,7 @@ function App() {
 
     setRepos([...repos, ...newRepos]);
     setPage(page + 1);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -37,6 +50,7 @@ function App() {
         hasMore={hasMore}
         loader={<h4>Loading more...</h4>}
       >
+        {isLoading && [...Array(5)].map((_, i) => <LoadingSkeleton key={i} />)}
         {repos.map(repo => (
           <Card key={repo.id} sx={{ display: "flex", p: 2, mb: 2 }}>
             <Avatar
