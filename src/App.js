@@ -1,20 +1,12 @@
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Card, CardContent, Typography, Avatar, Box, Skeleton } from "@mui/material";
+import { Box } from "@mui/material";
 import { fetchRepos } from "./api/github";
 import { getDateTenDaysAgo } from "./utils/getDate";
+import RepoCard from "./components/RepoCard";
+import AppHeader from "./components/AppHeader";
+import LoadingSkeleton from "./components/LoadingSkeleton";
 import "./App.css";
-
-const LoadingSkeleton = () => (
-  <Card sx={{ display: "flex", p: 2, mb: 2 }}>
-    <Skeleton variant="circular" width={60} height={60} />
-    <CardContent sx={{ width: "100%" }}>
-      <Skeleton height={25} width="60%" />
-      <Skeleton height={20} width="80%" />
-      <Skeleton height={20} width="40%" sx={{ mt: 1 }} />
-    </CardContent>
-  </Card>
-);
 
 function App() {
   const [repos, setRepos] = useState([]);
@@ -50,40 +42,29 @@ function App() {
   }, []);
 
   return (
-    <div className="container">
-      <h1>Most Starred GitHub Repos (Last 10 Days)</h1>
+    <Box sx={{ pb: 4 }}>
+      <AppHeader />
 
-      {error && (
-        <p style={{ color: "red", textAlign: "center" }}>{error}</p>
-      )}
+      <Box sx={{ mx: "auto", mt: 3, maxWidth: 800, px: 2 }}>
+        {error && (
+          <Box sx={{ backgroundColor: "#ffebee", color: "#d32f2f", p: 2, borderRadius: 1, mb: 2, textAlign: "center" }}>
+            {error}
+          </Box>
+        )}
 
-      <InfiniteScroll
-        dataLength={repos.length}
-        next={loadRepos}
-        hasMore={hasMore}
-        loader={<h4>Loading more...</h4>}
-      >
-        {isLoading && [...Array(5)].map((_, i) => <LoadingSkeleton key={i} />)}
-        {repos.map(repo => (
-          <Card key={repo.id} sx={{ display: "flex", p: 2, mb: 2 }}>
-            <Avatar
-              src={repo.owner.avatar_url}
-              sx={{ width: 60, height: 60, mr: 2 }}
-            />
-            <CardContent>
-              <Typography variant="h6">{repo.full_name}</Typography>
-              <Typography variant="subtitle2" color="text.secondary">
-                @{repo.owner.login}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {repo.description || "No description available"}
-              </Typography>
-              <Typography sx={{ mt: 1 }}>⭐ {repo.stargazers_count}</Typography>
-            </CardContent>
-          </Card>
-        ))}
-      </InfiniteScroll>
-    </div>
+        <InfiniteScroll
+          dataLength={repos.length}
+          next={loadRepos}
+          hasMore={hasMore}
+          loader={<LoadingSkeleton />}
+        >
+          {isLoading && [...Array(5)].map((_, i) => <LoadingSkeleton key={i} />)}
+          {repos.map(repo => (
+            <RepoCard key={repo.id} repo={repo} />
+          ))}
+        </InfiniteScroll>
+      </Box>
+    </Box>
   );
 }
 
