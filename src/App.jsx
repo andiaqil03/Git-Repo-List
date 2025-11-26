@@ -1,71 +1,22 @@
-import { useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { Box } from "@mui/material";
-import { fetchRepos } from "./api/github";
-import { getDateTenDaysAgo } from "./utils/getDate";
-import RepoCard from "./components/RepoCard.jsx";
-import AppHeader from "./components/AppHeader.jsx";
-import LoadingSkeleton from "./components/LoadingSkeleton.jsx";
-import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Settings from "./pages/SettingsPage";
+import BottomNav from "./components/BottomNav";
 
-function App() {
-  const [repos, setRepos] = useState([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const createdDate = getDateTenDaysAgo();
-
-  const loadRepos = async () => {
-    try {
-      const newRepos = await fetchRepos(createdDate, page);
-
-      if (newRepos.length === 0) {
-        setHasMore(false);
-        return;
-      }
-
-      setRepos(prev => [...prev, ...newRepos]);
-      setPage(prev => prev + 1);
-      setError(null);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load data. Please try again.");
-      setHasMore(false);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadRepos(); // load page 1 on mount
-  }, []);
-
+const App = () => {
   return (
-    <Box sx={{ pb: 4 }}>
-      <AppHeader />
+    <Router>
+      <div className="pb-16"> 
+        {/* to give padding for bottom nav */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </div>
 
-      <Box sx={{ mx: "auto", mt: 3, maxWidth: 800, px: 2 }}>
-        {error && (
-          <Box sx={{ backgroundColor: "#ffebee", color: "#d32f2f", p: 2, borderRadius: 1, mb: 2, textAlign: "center" }}>
-            {error}
-          </Box>
-        )}
-
-        <InfiniteScroll
-          dataLength={repos.length}
-          next={loadRepos}
-          hasMore={hasMore}
-          loader={<LoadingSkeleton />}
-        >
-          {isLoading && [...Array(5)].map((_, i) => <LoadingSkeleton key={i} />)}
-          {repos.map(repo => (
-            <RepoCard key={repo.id} repo={repo} />
-          ))}
-        </InfiniteScroll>
-      </Box>
-    </Box>
+      <BottomNav />
+    </Router>
   );
-}
+};
 
 export default App;
