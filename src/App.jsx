@@ -6,8 +6,7 @@ import BottomNav from "./components/BottomNav";
 const App = () => {
   return (
     <Router>
-      <div className="pb-16"> 
-        {/* to give padding for bottom nav */}
+      <div style={{ paddingBottom: "90px" }}> 
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/settings" element={<Settings />} />

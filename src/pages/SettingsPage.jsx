@@ -1,4 +1,3 @@
-import React from "react";
 import { useTheme } from "../context/ThemeContext";
 
 const SettingsPage = () => {
@@ -6,14 +5,13 @@ const SettingsPage = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Settings</h2>
+      <h1 className="text-xl font-bold mb-4">Settings</h1>
 
-      <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
-        <span className="text-lg">Dark Mode</span>
-
+      <div className="flex items-center justify-between p-3 bg-gray-200 dark:bg-gray-800 rounded-lg">
+        <span className="text-lg">Enable Dark Mode</span>
         <button
           onClick={toggleDarkMode}
-          className="px-4 py-2 rounded-lg border dark:border-gray-600"
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg"
         >
           {darkMode ? "Disable" : "Enable"}
         </button>
